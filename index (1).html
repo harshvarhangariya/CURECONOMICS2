@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Cureconomics: an interactive project on Logistic and Gompertz growth models, built by CalSymPy Team 12.">
+<title>Cureconomics | Growth Modelling Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Poppins:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#04060f;--panel:#0b1022;--line:#1c2540;--tx:#e8ecf8;--mu:#8e9ab8;--cy:#22d3ee;--vi:#8b7cff}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--tx);font:400 15px/1.7 Poppins,system-ui,sans-serif;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--cy);outline-offset:3px}
+.mono{font-family:"JetBrains Mono",monospace}
+/* header */
+header{position:fixed;inset:0 0 auto;z-index:50;display:flex;align-items:center;justify-content:space-between;height:68px;padding:0 5%;background:rgba(4,6,15,.72);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;letter-spacing:-.3px}
+.mark{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(135deg,var(--vi),var(--cy));color:#04060f;font-weight:800}
+nav{display:flex;gap:30px}nav a{font-size:13px;color:var(--mu);font-weight:500;transition:color .2s}nav a:hover{color:var(--cy)}
+.cta{font-size:13px;font-weight:600;padding:9px 18px;border-radius:99px;border:1px solid var(--cy);color:var(--cy);transition:.25s}
+.cta:hover{background:var(--cy);color:#04060f;box-shadow:0 0 24px #22d3ee66}
+.burger{display:none;background:none;border:1px solid var(--line);color:var(--tx);border-radius:8px;width:40px;height:40px;font-size:18px;cursor:pointer}
+/* hero */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:110px 5% 70px;overflow:hidden}
+#stage{position:absolute;inset:0;width:100%;height:100%}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(4,6,15,.55),transparent 70%);pointer-events:none}
+.hero-in{position:relative;z-index:2;max-width:1100px}
+.tag{font-size:12px;color:var(--cy);letter-spacing:.5px}
+h1{margin:14px 0 18px;font-weight:800;font-size:clamp(1.9rem,8.6vw,6.2rem);line-height:1.05;letter-spacing:-.035em;white-space:nowrap;background:linear-gradient(90deg,#fff 0%,#c4b9ff 38%,var(--cy) 100%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 7s ease-in-out infinite alternate}
+@keyframes shine{to{background-position:100% 0}}
+.lead{max-width:560px;color:var(--mu);font-size:16px}
+.acts{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+.btn{border:0;cursor:pointer;font:600 14px Poppins;padding:14px 26px;border-radius:12px;background:linear-gradient(135deg,var(--vi),var(--cy));color:#04060f;transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-3px);box-shadow:0 12px 34px #22d3ee44}
+.btn.ghost{background:none;color:var(--tx);border:1px solid var(--line)}
+.scroll{position:absolute;bottom:22px;left:5%;z-index:2;font-size:11px;color:var(--mu)}
+/* sections */
+section{padding:96px 5%;position:relative}
+.wrap{max-width:1120px;margin:0 auto}
+h2{font-size:clamp(1.7rem,3.6vw,2.6rem);line-height:1.15;letter-spacing:-.03em;margin:8px 0 14px;font-weight:600}
+.sub{color:var(--mu);max-width:640px;margin:0 0 40px}
+.grid{display:grid;gap:18px}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:1fr 1fr}.g5{grid-template-columns:repeat(4,1fr)}
+.card{background:linear-gradient(160deg,#0e1530,var(--panel));border:1px solid var(--line);border-radius:16px;padding:26px;transform-style:preserve-3d;transition:transform .15s ease-out,border-color .3s,box-shadow .3s;will-change:transform}
+.card:hover{border-color:#2f4a78;box-shadow:0 20px 50px rgba(34,211,238,.1)}
+.card h3{margin:0 0 8px;font-size:17px;font-weight:600}.card p{margin:0;color:var(--mu);font-size:13.5px}
+.big{font:800 36px Poppins;background:linear-gradient(90deg,var(--vi),var(--cy));-webkit-background-clip:text;background-clip:text;color:transparent}
+.formula{font:500 20px "JetBrains Mono",monospace;color:var(--cy);margin:18px 0;overflow-x:auto;white-space:nowrap}
+.member{text-align:center}.ava{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;margin:4px auto 16px;font:800 26px Poppins;color:var(--cy);background:#0a1230;border:3px solid transparent;background-image:linear-gradient(#0a1230,#0a1230),linear-gradient(135deg,var(--vi),var(--cy));background-origin:border-box;background-clip:padding-box,border-box;box-shadow:0 0 26px #22d3ee33}.role{display:block;font-size:12px;color:var(--vi);margin-bottom:10px}
+.sym{font:800 30px Poppins;color:var(--vi)}
+/* analyzer */
+.lab{display:grid;grid-template-columns:320px 1fr;gap:18px}
+label{display:flex;justify-content:space-between;font-size:12px;font-weight:600;margin:16px 0 7px}
+input[type=text]{width:100%;padding:11px 12px;background:#060a18;border:1px solid var(--line);border-radius:9px;color:var(--tx);font:13px "JetBrains Mono",monospace}
+input[type=range]{width:100%;accent-color:var(--cy)}
+.err{color:#ff8da0;font-size:12px;margin-top:10px}
+canvas#chart{width:100%;height:280px;display:block;background:#060a18;border:1px solid var(--line);border-radius:12px}
+.mets{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.mets div{border:1px solid var(--line);border-radius:10px;padding:12px}.mets small{display:block;font-size:10px;color:var(--mu)}.mets b{font-size:19px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}.chips span{font-size:11px;background:#121a38;color:#b9c4ff;padding:6px 10px;border-radius:7px}
+.legend{display:flex;gap:18px;font-size:11px;color:var(--mu);margin-top:10px}.legend i{display:inline-block;width:14px;height:3px;margin-right:6px;vertical-align:middle}
+code{font:12px "JetBrains Mono",monospace;color:#7ee9d0;background:#070b1b;padding:5px 8px;border-radius:6px}
+.note{font-size:12px;color:var(--mu)}
+/* footer */
+footer{border-top:1px solid var(--line);background:#02040b;padding:60px 5% 26px}
+.fgrid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:40px;max-width:1120px;margin:0 auto}
+footer h4{margin:0 0 14px;font-size:13px;font-weight:600}footer ul{list-style:none;margin:0;padding:0}footer li{margin:8px 0}
+footer li a,footer p{font-size:13px;color:var(--mu)}footer li a:hover{color:var(--cy)}
+.fbar{max-width:1120px;margin:40px auto 0;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;color:#6b7694}
+@media(max-width:900px){.lab,.g2,.fgrid{grid-template-columns:1fr}.g3{grid-template-columns:1fr}.g5{grid-template-columns:1fr 1fr}.mets{grid-template-columns:1fr 1fr}
+nav{position:fixed;top:68px;left:0;right:0;flex-direction:column;gap:0;background:#060a18;border-bottom:1px solid var(--line);display:none}nav.open{display:flex}nav a{padding:16px 5%;border-top:1px solid var(--line)}.burger{display:block}.cta{display:none}}
+@media(prefers-reduced-motion:reduce){h1{animation:none}html{scroll-behavior:auto}.card{transition:none}}
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="#home"><span class="mark">C</span>Cureconomics</a>
+  <nav id="nav" aria-label="Main">
+    <a href="#about">Overview</a><a href="#lab1">Calculus</a><a href="#analyzer">Analyzer</a><a href="#maths">Models</a><a href="#python">Python</a><a href="#team">Team</a>
+  </nav>
+  <a class="cta" href="#analyzer">Try the analyzer</a>
+  <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false">☰</button>
+</header>
+
+<main>
+<section class="hero" id="home" style="padding-top:110px">
+  <canvas id="stage" aria-hidden="true"></canvas>
+  <div class="hero-in">
+    <div class="tag mono">CalSymPy Team 12 · Calculus + Python</div>
+    <h1>Cureconomics</h1>
+    <p class="lead">See how Logistic and Gompertz growth curves turn a few observations into a forecast, then try it on your own numbers.</p>
+    <div class="acts"><a class="btn" href="#analyzer">Open the analyzer</a><a class="btn ghost" href="#maths">See the mathematics</a></div>
+  </div>
+  <div class="scroll mono">Move your mouse to tilt the curves</div>
+</section>
+
+<section id="about"><div class="wrap">
+  <h2>Growth is rarely a straight line.</h2>
+  <p class="sub">Tumours, economies and product demand often grow in an S-shape: slowly at first, then fast, then flattening near a limit. Cureconomics fits two classic S-curves to your data and compares them.</p>
+  <div class="grid g3">
+    <div class="card tilt"><div class="big">2</div><h3>Growth models</h3><p>Logistic and Gompertz, fitted side by side.</p></div>
+    <div class="card tilt"><div class="big">3</div><h3>Error measures</h3><p>RMSE, MAE and R² show which curve fits better.</p></div>
+    <div class="card tilt"><div class="big">1</div><h3>Forecast lab</h3><p>Enter data, fit, and project future values.</p></div>
+  </div>
+</div></section>
+
+<section id="lab1"><div class="wrap">
+  <h2>Lab 1: derivative and integral</h2>
+  <p class="sub">The calculus behind the curves. Differentiation gives the growth rate; integration rebuilds the curve from that rate.</p>
+  <div class="grid g2">
+    <div class="card tilt"><span class="sym">d/dt</span><div class="formula">dN/dt = rN(1 − N/K)</div><p>The derivative is the instant growth rate. It is largest when N is about half of K, which is where the S-curve is steepest.</p></div>
+    <div class="card tilt"><span class="sym">∫</span><div class="formula">N(t) = ∫ (dN/dt) dt</div><p>Integrating the rate over time gives the cumulative size. Solving this differential equation produces the Logistic formula.</p></div>
+  </div>
+</div></section>
+
+<section id="analyzer"><div class="wrap">
+  <h2>Growth model analyzer</h2>
+  <p class="sub">Enter matching time and size values, then fit both models.</p>
+  <div class="lab">
+    <div class="card">
+      <label for="times">Time values</label><input id="times" type="text" value="0, 1, 2, 4, 6, 8, 10, 12" spellcheck="false">
+      <label for="vals">Measured size</label><input id="vals" type="text" value="10, 15.5, 23.2, 45.1, 69.1, 85.8, 94.3, 97.8" spellcheck="false">
+      <p class="note">Comma-separated, at least four points, times increasing.</p>
+      <label for="steps">Forecast horizon <b id="sv">5 steps</b></label><input id="steps" type="range" min="1" max="20" value="5">
+      <button class="btn" id="go" style="width:100%;margin-top:18px">Fit models and forecast</button>
+      <div class="err" id="err" role="alert" hidden></div>
+      <p class="note" style="margin-top:16px">Educational demonstration. Not medical or financial advice.</p>
+    </div>
+    <div class="card">
+      <canvas id="chart" aria-label="Chart of data with fitted Logistic and Gompertz curves"></canvas>
+      <div class="legend"><span><i style="background:#8b7cff"></i>Logistic</span><span><i style="background:#22d3ee"></i>Gompertz</span><span><i style="background:#fff"></i>Data</span></div>
+      <div class="mets">
+        <div><small>RMSE Logistic</small><b id="m1">—</b></div><div><small>RMSE Gompertz</small><b id="m2">—</b></div>
+        <div><small>MAE best</small><b id="m3">—</b></div><div><small>R² best</small><b id="m4">—</b></div>
+      </div>
+      <div class="chips" id="fc"></div>
+    </div>
+  </div>
+</div></section>
+
+<section id="maths"><div class="wrap">
+  <h2>Two models, one comparison.</h2>
+  <p class="sub">K is the upper limit, r the growth rate, A the starting shape and t is time.</p>
+  <div class="grid g2">
+    <div class="card tilt"><h3>Logistic growth</h3><div class="formula">N(t) = K / (1 + A·e^(−rt))</div><p>Symmetric around its fastest-growth point. Growth slows as N nears K.</p></div>
+    <div class="card tilt"><h3>Gompertz growth</h3><div class="formula">N(t) = K·e^(−A·e^(−rt))</div><p>Asymmetric: it grows quickly early and approaches K more slowly.</p></div>
+  </div>
+  <div class="grid g3" style="margin-top:18px">
+    <div class="card tilt"><span class="sym">∂</span><h3>Partial derivatives</h3><p>Show how the fitting error changes with K, r and A, which guides the optimizer.</p></div>
+    <div class="card tilt"><span class="sym">Σ</span><h3>Least squares</h3><p>The best curve minimizes the sum of squared gaps between data and model.</p></div>
+    <div class="card tilt"><span class="sym">±</span><h3>Forecast limits</h3><p>Few or noisy points make parameters uncertain, so treat forecasts as estimates.</p></div>
+  </div>
+</div></section>
+
+<section id="python"><div class="wrap">
+  <h2>Python powers the project logic.</h2>
+  <p class="sub">The report uses these libraries. This website runs the same steps in JavaScript so it works on GitHub Pages.</p>
+  <div class="grid g5">
+    <div class="card tilt"><h3>NumPy</h3><p>Arrays and exponentials.</p><br><code>np.linspace()</code></div>
+        <div class="card tilt"><h3>SciPy</h3><p>Nonlinear curve fitting.</p><br><code>curve_fit()</code></div>
+    <div class="card tilt"><h3>Matplotlib</h3><p>Plots data and fits.</p><br><code>plt.plot()</code></div>
+    <div class="card tilt"><h3>SymPy</h3><p>Symbolic derivatives.</p><br><code>sp.diff()</code></div>
+  </div>
+</div></section>
+<section id="team"><div class="wrap">
+  <h2>Meet CalSymPy Team 12.</h2>
+  <p class="sub">We are a student team combining calculus and Python to model how things grow. Cureconomics is our project for the Calculus + Python course.</p>
+  <div class="grid g5">
+    <div class="card tilt member"><div class="ava">NP</div><h3>Naman Pareek</h3><span class="role mono">Mentor</span><p>Guides the team’s direction and reviews the mathematics and the method.</p></div>
+    <div class="card tilt member"><div class="ava">KT</div><h3>Kushagra Tiwari</h3><span class="role mono">Mathematical Modeler</span><p>Derives the Logistic and Gompertz models from their differential equations.</p></div>
+    <div class="card tilt member"><div class="ava">NP</div><h3>Nikhil Prasad</h3><span class="role mono">Information Analyst</span><p>Organises the data and interprets what the fitted results mean.</p></div>
+    <div class="card tilt member"><div class="ava">AG</div><h3>Aviraj Gupta</h3><span class="role mono">Pseudo Code Developer</span><p>Turns the method into a clear step-by-step algorithm and flowchart.</p></div>
+    <div class="card tilt member"><div class="ava">SS</div><h3>Shashank Sagar</h3><span class="role mono">Researcher</span><p>Gathers the references and background for tumor and economic growth.</p></div>
+    <div class="card tilt member"><div class="ava">HG</div><h3>Harshvardhan Gariya</h3><span class="role mono">Programme Deployer</span><p>Packages the project and publishes it so anyone can open it.</p></div>
+    <div class="card tilt member"><div class="ava">AS</div><h3>Anuj Singh</h3><span class="role mono">Code Developer</span><p>Writes the fitting, error-metric and forecasting code.</p></div>
+    <div class="card tilt member"><div class="ava">KC</div><h3>Kopalli Chiruvamsi</h3><span class="role mono">Project Manager</span><p>Plans the schedule, runs the meetings and keeps the work on track.</p></div>
+  </div>
+</div></section>
+</main>
+
+<footer>
+  <div class="fgrid">
+    <div><a class="brand" href="#home"><span class="mark">C</span>Cureconomics</a><p style="margin-top:14px;max-width:340px">An educational project on S-shaped growth models, built with calculus and Python by CalSymPy Team 12.</p></div>
+    <div><h4>Explore</h4><ul><li><a href="#about">Overview</a></li><li><a href="#lab1">Calculus</a></li><li><a href="#analyzer">Analyzer</a></li><li><a href="#maths">Models</a></li><li><a href="#python">Python</a></li><li><a href="#team">Team</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><p>CalSymPy Team 12</p></li><li><p>Calculus + Python</p></li><li><p>Educational demonstration</p></li></ul></div>
+  </div>
+  <div class="fbar"><span>© 2026 Cureconomics · CalSymPy Team 12</span><span>Sample data is illustrative. Forecasts are estimates, not guarantees.</span><a href="#home">Back to top</a></div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const $=id=>document.getElementById(id),RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+/* menu */
+$('burger').onclick=()=>{const o=$('nav').classList.toggle('open');$('burger').setAttribute('aria-expanded',o)};
+$('nav').onclick=e=>{if(e.target.tagName==='A'){$('nav').classList.remove('open');$('burger').setAttribute('aria-expanded',false)}};
+/* card tilt */
+if(!RM)document.querySelectorAll('.tilt').forEach(c=>{
+  c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform=`perspective(800px) rotateY(${x*12}deg) rotateX(${-y*12}deg) translateZ(8px)`});
+  c.addEventListener('mouseleave',()=>c.style.transform='')});
+/* 3D hero */
+(function(){
+  if(!window.THREE)return;
+  const cv=$('stage'),hero=cv.parentElement,R=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true});
+  const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(50,1,.1,100);C.position.set(0,.3,10);
+  const G=new THREE.Group();S.add(G);
+  const N=90,curves=[],dots=[];
+  for(let i=0;i<10;i++){
+    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(N*3),3));
+    const col=i%2?0x22d3ee:0x8b7cff,l=new THREE.Line(g,new THREE.LineBasicMaterial({color:col,transparent:true,opacity:.85}));
+    G.add(l);curves.push({g,i});
+    const d=new THREE.Mesh(new THREE.SphereGeometry(.085,12,12),new THREE.MeshBasicMaterial({color:0xffffff}));G.add(d);dots.push({d,i,o:Math.random()});
+  }
+  const grid=new THREE.GridHelper(20,28,0x1f2c55,0x121a36);grid.position.y=-2.1;G.add(grid);
+  const P=new Float32Array(500*3);for(let i=0;i<P.length;i++)P[i]=(Math.random()-.5)*(i%3==1?8:20);
+  const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(P,3));
+  const pts=new THREE.Points(pg,new THREE.PointsMaterial({color:0x9fb4ff,size:.045,transparent:true,opacity:.7}));S.add(pts);
+  const y=(i,t,tm)=>{const x=t+Math.sin(tm*.8+i)*.15;return(i%2?3.2*Math.exp(-2*Math.exp(-1.1*(x+.3))):3.2/(1+Math.exp(-1.3*x)))-1.7+Math.sin(t*1.6+tm*1.2+i*.6)*.12};
+  const mx={x:0,y:0},cur={x:0,y:0};
+  hero.addEventListener('mousemove',e=>{const r=hero.getBoundingClientRect();mx.x=(e.clientX-r.left)/r.width-.5;mx.y=(e.clientY-r.top)/r.height-.5});
+  function size(){const w=hero.clientWidth,h=hero.clientHeight;R.setPixelRatio(Math.min(devicePixelRatio,2));R.setSize(w,h,false);C.aspect=w/h;C.updateProjectionMatrix();G.position.x=w>900?2.6:0;G.scale.setScalar(w>900?1:.7)}
+  addEventListener('resize',size);size();
+  let vis=true;new IntersectionObserver(e=>vis=e[0].isIntersecting).observe(hero);
+  function frame(ms){
+    requestAnimationFrame(frame);if(!vis||document.hidden)return;
+    const tm=RM?0:ms/1000;
+    curves.forEach(({g,i})=>{const a=g.attributes.position;for(let k=0;k<N;k++){const t=-4+8*k/(N-1);a.setXYZ(k,t*1.5,y(i,t,tm),(i-4.5)*.75)}a.needsUpdate=true});
+    dots.forEach(({d,i,o})=>{const t=-4+8*((tm*.07+o)%1);d.position.set(t*1.5,y(i,t,tm),(i-4.5)*.75)});
+    cur.x+=(mx.x-cur.x)*.05;cur.y+=(mx.y-cur.y)*.05;
+    G.rotation.y=-.5+cur.x*.7+Math.sin(tm*.25)*.12;G.rotation.x=.18+cur.y*.35;pts.rotation.y=tm*.02;
+    R.render(S,C)}
+  requestAnimationFrame(frame);
+})();
+/* analyzer */
+const L=(t,K,r,A)=>K/(1+A*Math.exp(-r*t)),Gp=(t,K,r,A)=>K*Math.exp(-A*Math.exp(-r*t));
+function fit(m,T,V){
+  const mx=Math.max(...V),mn=Math.min(...V),sp=Math.max(...T)-Math.min(...T);
+  let p=[mx*1.2,4/Math.max(sp,1),Math.max(mx/Math.max(mn,.001)-1,.1)];
+  const f=q=>q[0]<=mx||q[1]<=0||q[2]<=0?Infinity:T.reduce((s,t,i)=>s+(V[i]-m(t,...q))**2,0);
+  let b=f(p),st=[Math.max(mx*.25,1),.5,Math.max(p[2]*.5,.1)];
+  for(let n=0;n<300;n++){let ok=false;
+    for(let j=0;j<3;j++)for(const d of[-1,1]){const c=[...p];c[j]+=d*st[j];c[0]=Math.max(c[0],mx+1e-4);c[1]=Math.max(c[1],1e-5);c[2]=Math.max(c[2],1e-5);const s=f(c);if(s<b){p=c;b=s;ok=true}}
+    if(!ok)st=st.map(x=>x*.65);if(Math.max(...st)<1e-6)break}
+  const e=T.map((t,i)=>V[i]-m(t,...p)),mean=V.reduce((a,c)=>a+c,0)/V.length,tot=V.reduce((s,v)=>s+(v-mean)**2,0);
+  return{p,m,rmse:Math.sqrt(b/V.length),mae:e.reduce((s,x)=>s+Math.abs(x),0)/e.length,r2:tot?1-b/tot:NaN};
+}
+const list=s=>s.split(',').map(x=>Number(x.trim()));
+function draw(T,V,a,b,ft){
+  const c=$('chart'),dpr=devicePixelRatio||1,w=c.clientWidth,h=c.clientHeight;c.width=w*dpr;c.height=h*dpr;
+  const x=c.getContext('2d');x.scale(dpr,dpr);
+  const dt=(T[T.length-1]-T[0])/(T.length-1),tEnd=T[T.length-1]+ft*dt,top=Math.max(...V,a.p[0],b.p[0])*1.05,pad=34;
+  const X=t=>pad+(t-T[0])/(tEnd-T[0])*(w-pad-12),Y=v=>h-pad-v/top*(h-pad-14);
+  x.strokeStyle='#1c2540';x.fillStyle='#8e9ab8';x.font='10px JetBrains Mono';
+  for(let i=0;i<=4;i++){const v=top*i/4;x.beginPath();x.moveTo(pad,Y(v));x.lineTo(w-12,Y(v));x.stroke();x.fillText(v.toFixed(0),4,Y(v)+3)}
+  x.fillStyle='rgba(139,124,255,.08)';x.fillRect(X(T[T.length-1]),14,w-12-X(T[T.length-1]),h-pad-14);
+  [[a,'#8b7cff'],[b,'#22d3ee']].forEach(([f,col])=>{x.strokeStyle=col;x.lineWidth=2.5;x.beginPath();
+    for(let k=0;k<=120;k++){const t=T[0]+(tEnd-T[0])*k/120;k?x.lineTo(X(t),Y(f.m(t,...f.p))):x.moveTo(X(t),Y(f.m(t,...f.p)))}x.stroke()});
+  x.fillStyle='#fff';T.forEach((t,i)=>{x.beginPath();x.arc(X(t),Y(V[i]),4,0,7);x.fill()});
+}
+function run(){
+  const e=$('err');e.hidden=true;
+  try{
+    const T=list($('times').value),V=list($('vals').value),ft=+$('steps').value;
+    if(T.length!==V.length||T.length<4||[...T,...V].some(n=>!isFinite(n)))throw'Enter at least four matching numbers in both fields.';
+    if(T.some((t,i)=>i&&t<=T[i-1]))throw'Time values must be unique and increasing.';
+    if(Math.min(...V)<=0)throw'Measured values must be greater than zero.';
+    const a=fit(L,T,V),b=fit(Gp,T,V),best=a.rmse<=b.rmse?a:b,dt=(T[T.length-1]-T[0])/(T.length-1);
+    $('m1').textContent=a.rmse.toFixed(3);$('m2').textContent=b.rmse.toFixed(3);$('m3').textContent=best.mae.toFixed(3);$('m4').textContent=isNaN(best.r2)?'—':best.r2.toFixed(4);
+    $('fc').innerHTML=Array.from({length:ft},(_,k)=>{const t=T[T.length-1]+(k+1)*dt;return`<span>t=${+t.toFixed(2)}: ${best.m(t,...best.p).toFixed(1)}</span>`}).join('');
+    draw(T,V,a,b,ft);
+  }catch(x){e.textContent=typeof x==='string'?x:'Could not fit this data. Check the values.';e.hidden=false}
+}
+$('go').onclick=run;$('steps').oninput=()=>{$('sv').textContent=$('steps').value+' steps'};
+addEventListener('resize',run);run();
+</script>
+</body>
+</html>
