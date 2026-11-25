@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Cureconomics: an interactive project on Logistic and Gompertz growth models, built by CalSymPy Team 12.">
+<title>Cureconomics | Growth Modelling Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Poppins:wght@400;500;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <a class="brand" href="#home"><span class="mark">C</span>Cureconomics</a>
+  <nav id="nav" aria-label="Main">
+    <a href="#about">Overview</a><a href="#lab1">Calculus</a><a href="#analyzer">Analyzer</a><a href="#maths">Models</a><a href="#python">Python</a><a href="#team">Team</a>
+  </nav>
+  <a class="cta" href="#analyzer">Try the analyzer</a>
+  <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false">☰</button>
+</header>
+
+<main>
+<section class="hero" id="home" style="padding-top:110px">
+  <canvas id="stage" aria-hidden="true"></canvas>
+  <div class="hero-in">
+    <div class="tag mono">CalSymPy Team 12 · Calculus + Python</div>
+    <h1>Cureconomics</h1>
+    <p class="lead">See how Logistic and Gompertz growth curves turn a few observations into a forecast, then try it on your own numbers.</p>
+    <div class="acts"><a class="btn" href="#analyzer">Open the analyzer</a><a class="btn ghost" href="#maths">See the mathematics</a></div>
+  </div>
+  <div class="scroll mono">Move your mouse to tilt the curves</div>
+</section>
+
+<section id="about"><div class="wrap">
+  <h2>Growth is rarely a straight line.</h2>
+  <p class="sub">Tumours, economies and product demand often grow in an S-shape: slowly at first, then fast, then flattening near a limit. Cureconomics fits two classic S-curves to your data and compares them.</p>
+  <div class="grid g3">
+    <div class="card tilt"><div class="big">2</div><h3>Growth models</h3><p>Logistic and Gompertz, fitted side by side.</p></div>
+    <div class="card tilt"><div class="big">3</div><h3>Error measures</h3><p>RMSE, MAE and R² show which curve fits better.</p></div>
+    <div class="card tilt"><div class="big">1</div><h3>Forecast lab</h3><p>Enter data, fit, and project future values.</p></div>
+  </div>
+</div></section>
+
+<section id="lab1"><div class="wrap">
+  <h2>Lab 1: derivative and integral</h2>
+  <p class="sub">The calculus behind the curves. Differentiation gives the growth rate; integration rebuilds the curve from that rate.</p>
+  <div class="grid g2">
+    <div class="card tilt"><span class="sym">d/dt</span><div class="formula">dN/dt = rN(1 − N/K)</div><p>The derivative is the instant growth rate. It is largest when N is about half of K, which is where the S-curve is steepest.</p></div>
+    <div class="card tilt"><span class="sym">∫</span><div class="formula">N(t) = ∫ (dN/dt) dt</div><p>Integrating the rate over time gives the cumulative size. Solving this differential equation produces the Logistic formula.</p></div>
+  </div>
+</div></section>
+
+<section id="analyzer"><div class="wrap">
+  <h2>Growth model analyzer</h2>
+  <p class="sub">Enter matching time and size values, then fit both models.</p>
+  <div class="lab">
+    <div class="card">
+      <label for="times">Time values</label><input id="times" type="text" value="0, 1, 2, 4, 6, 8, 10, 12" spellcheck="false">
+      <label for="vals">Measured size</label><input id="vals" type="text" value="10, 15.5, 23.2, 45.1, 69.1, 85.8, 94.3, 97.8" spellcheck="false">
+      <p class="note">Comma-separated, at least four points, times increasing.</p>
+      <label for="steps">Forecast horizon <b id="sv">5 steps</b></label><input id="steps" type="range" min="1" max="20" value="5">
+      <button class="btn" id="go" style="width:100%;margin-top:18px">Fit models and forecast</button>
+      <div class="err" id="err" role="alert" hidden></div>
+      <p class="note" style="margin-top:16px">Educational demonstration. Not medical or financial advice.</p>
+    </div>
+    <div class="card">
+      <canvas id="chart" aria-label="Chart of data with fitted Logistic and Gompertz curves"></canvas>
+      <div class="legend"><span><i style="background:#8b7cff"></i>Logistic</span><span><i style="background:#22d3ee"></i>Gompertz</span><span><i style="background:#fff"></i>Data</span></div>
+      <div class="mets">
+        <div><small>RMSE Logistic</small><b id="m1">—</b></div><div><small>RMSE Gompertz</small><b id="m2">—</b></div>
+        <div><small>MAE best</small><b id="m3">—</b></div><div><small>R² best</small><b id="m4">—</b></div>
+      </div>
+      <div class="chips" id="fc"></div>
+    </div>
+  </div>
+</div></section>
+
+<section id="maths"><div class="wrap">
+  <h2>Two models, one comparison.</h2>
+  <p class="sub">K is the upper limit, r the growth rate, A the starting shape and t is time.</p>
+  <div class="grid g2">
+    <div class="card tilt"><h3>Logistic growth</h3><div class="formula">N(t) = K / (1 + A·e^(−rt))</div><p>Symmetric around its fastest-growth point. Growth slows as N nears K.</p></div>
+    <div class="card tilt"><h3>Gompertz growth</h3><div class="formula">N(t) = K·e^(−A·e^(−rt))</div><p>Asymmetric: it grows quickly early and approaches K more slowly.</p></div>
+  </div>
+  <div class="grid g3" style="margin-top:18px">
+    <div class="card tilt"><span class="sym">∂</span><h3>Partial derivatives</h3><p>Show how the fitting error changes with K, r and A, which guides the optimizer.</p></div>
+    <div class="card tilt"><span class="sym">Σ</span><h3>Least squares</h3><p>The best curve minimizes the sum of squared gaps between data and model.</p></div>
+    <div class="card tilt"><span class="sym">±</span><h3>Forecast limits</h3><p>Few or noisy points make parameters uncertain, so treat forecasts as estimates.</p></div>
+  </div>
+</div></section>
+
+<section id="python"><div class="wrap">
+  <h2>Python powers the project logic.</h2>
+  <p class="sub">The report uses these libraries. This website runs the same steps in JavaScript so it works on GitHub Pages.</p>
+  <div class="grid g5">
+    <div class="card tilt"><h3>NumPy</h3><p>Arrays and exponentials.</p><br><code>np.linspace()</code></div>
+        <div class="card tilt"><h3>SciPy</h3><p>Nonlinear curve fitting.</p><br><code>curve_fit()</code></div>
+    <div class="card tilt"><h3>Matplotlib</h3><p>Plots data and fits.</p><br><code>plt.plot()</code></div>
+    <div class="card tilt"><h3>SymPy</h3><p>Symbolic derivatives.</p><br><code>sp.diff()</code></div>
+  </div>
+</div></section>
+<section id="team"><div class="wrap">
+  <h2>Meet CalSymPy Team 12.</h2>
+  <p class="sub">We are a student team combining calculus and Python to model how things grow. Cureconomics is our project for the Calculus + Python course.</p>
+  <div class="grid g5">
+    <div class="card tilt member"><div class="ava">NP</div><h3>Naman Pareek</h3><span class="role mono">Mentor</span><p>Guides the team’s direction and reviews the mathematics and the method.</p></div>
+    <div class="card tilt member"><div class="ava">KT</div><h3>Kushagra Tiwari</h3><span class="role mono">Mathematical Modeler</span><p>Derives the Logistic and Gompertz models from their differential equations.</p></div>
+    <div class="card tilt member"><div class="ava">NP</div><h3>Nikhil Prasad</h3><span class="role mono">Information Analyst</span><p>Organises the data and interprets what the fitted results mean.</p></div>
+    <div class="card tilt member"><div class="ava">AG</div><h3>Aviraj Gupta</h3><span class="role mono">Pseudo Code Developer</span><p>Turns the method into a clear step-by-step algorithm and flowchart.</p></div>
+    <div class="card tilt member"><div class="ava">SS</div><h3>Shashank Sagar</h3><span class="role mono">Researcher</span><p>Gathers the references and background for tumor and economic growth.</p></div>
+    <div class="card tilt member"><div class="ava">HG</div><h3>Harshvardhan Gariya</h3><span class="role mono">Programme Deployer</span><p>Packages the project and publishes it so anyone can open it.</p></div>
+    <div class="card tilt member"><div class="ava">AS</div><h3>Anuj Singh</h3><span class="role mono">Code Developer</span><p>Writes the fitting, error-metric and forecasting code.</p></div>
+    <div class="card tilt member"><div class="ava">KC</div><h3>Kopalli Chiruvamsi</h3><span class="role mono">Project Manager</span><p>Plans the schedule, runs the meetings and keeps the work on track.</p></div>
+  </div>
+</div></section>
+</main>
+
+<footer>
+  <div class="fgrid">
+    <div><a class="brand" href="#home"><span class="mark">C</span>Cureconomics</a><p style="margin-top:14px;max-width:340px">An educational project on S-shaped growth models, built with calculus and Python by CalSymPy Team 12.</p></div>
+    <div><h4>Explore</h4><ul><li><a href="#about">Overview</a></li><li><a href="#lab1">Calculus</a></li><li><a href="#analyzer">Analyzer</a></li><li><a href="#maths">Models</a></li><li><a href="#python">Python</a></li><li><a href="#team">Team</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><p>CalSymPy Team 12</p></li><li><p>Calculus + Python</p></li><li><p>Educational demonstration</p></li></ul></div>
+  </div>
+  <div class="fbar"><span>© 2026 Cureconomics · CalSymPy Team 12</span><span>Sample data is illustrative. Forecasts are estimates, not guarantees.</span><a href="#home">Back to top</a></div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
